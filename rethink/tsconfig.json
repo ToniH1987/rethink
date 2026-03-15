@@ -1,4 +1,5 @@
 {
+    "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
         "module": "node16",
         "moduleResolution": "node16",
@@ -6,11 +7,15 @@
         "allowJs": true,
         "esModuleInterop": true,
         "lib": ["es2021"],
-        "target": "es6",
-        "typeRoots": ["./types" ],
-        "strictNullChecks": true,
+        "target": "es2021",
+
+        // TODO?: "paths": { "@/*": ["./*"] },
+
+        // TODO?: "strict": true,
+        "strictNullChecks": true, // TODO?: can be removed once "strict" is enabled
+        "noUncheckedSideEffectImports": true,
+        "skipLibCheck": true
     },
 
     "include": [ "./**/*.ts" ],
-    "exclude": [ "node_modules" ]
 }
