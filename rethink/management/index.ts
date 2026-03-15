@@ -6,7 +6,7 @@ import log from '../util/logging';
 
 import HA_bridge from '../cloud/ha_bridge'
 import { AnyDevice, DeviceManager } from '../cloud/devmgr';
-import { Bridge } from '../bridge/bridge';
+import { Bridge } from '../bridge';
 import { Request, Response } from 'express';
 import { Device as T1Device } from "../cloud/thinq1/device";
 import { Device as T2Device } from "../cloud/thinq2/device";

@@ -2,7 +2,7 @@ import HADevice from './base'
 import { Device as Thinq2Device } from "../thinq2/device"
 import { type Connection } from '../homeassistant'
 import { type Metadata } from "../thinq"
-import { allowExtendedType } from '../../util/util'
+import { allowExtendedType } from '../../util/casting'
 import AABBDevice from './aabb_device'
 
 /* official integration exposes these:

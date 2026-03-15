@@ -2,7 +2,7 @@ import TLVDevice, { FieldDefinition } from './tlv_device'
 import { Device as Thinq2Device } from "../thinq2/device"
 import { Config, type Connection } from '../homeassistant'
 import { type Metadata } from '../thinq'
-import { allowExtendedType } from '../../util/util'
+import { allowExtendedType } from '../../util/casting'
 import * as TLV from "../../util/tlv"
 import log from '../../util/logging'
 import HADevice from './base'

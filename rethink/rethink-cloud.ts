@@ -14,11 +14,11 @@ import { DeviceAcceptor as T2Acceptor } from './cloud/thinq2/device'
 import { Connection as HA_connection } from './cloud/homeassistant'
 import HA_bridge from './cloud/ha_bridge'
 import { Config, CA } from './util/config'
-import * as Management from './management/management'
+import * as Management from './management'
 
 import log, { setFilter as setLogFilter } from './util/logging'
 import { DeviceManager } from './cloud/devmgr'
-import { Bridge } from './bridge/bridge'
+import { Bridge } from './bridge'
 import { JSONStorage } from './bridge/state'
 
 const configPath = resolve(process.argv[2] ?? './config.json')
