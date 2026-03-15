@@ -1,5 +1,5 @@
 import * as tls from 'node:tls'
-import * as mtosp from './util/mtosp.js'
+import * as mtosp from './util/mtosp'
 
 const [host, wifiname, wifipass] = process.argv.slice(2)
 

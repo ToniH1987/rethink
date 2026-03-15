@@ -1,8 +1,8 @@
 import { TypedEmitter } from 'tiny-typed-emitter';
 import { Duplex } from 'node:stream'
-import { Connection } from './connection.js'
-import { getDeviceMetadata } from './http.js'
-import { Metadata } from '../thinq.js'
+import { Connection } from './connection'
+import { getDeviceMetadata } from './http'
+import { Metadata } from '../thinq'
 import { randomUUID } from 'node:crypto';
 
 type ConWithExtra = Connection & {

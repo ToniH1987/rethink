@@ -1,8 +1,8 @@
-import HADevice from './base.js'
-import { Device as Thinq1Device } from "../thinq1/device.js"
-import { type Connection } from '../homeassistant.js'
-import { allowExtendedType } from '../../util/util.js'
-import { Metadata } from '../thinq.js'
+import HADevice from './base'
+import { Device as Thinq1Device } from "../thinq1/device"
+import { type Connection } from '../homeassistant'
+import { allowExtendedType } from '../../util/util'
+import { Metadata } from '../thinq'
 
 const ERRORS = [
     'OK',

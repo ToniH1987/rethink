@@ -1,4 +1,4 @@
-import { Environment, Thinq1DeviceState, Thinq2DeviceState } from "./thinqApi.js"
+import { Environment, Thinq1DeviceState, Thinq2DeviceState } from "./thinqApi"
 import { readFileSync, unlinkSync, writeFileSync } from "node:fs"
 
 export type Credentials = {

@@ -1,6 +1,6 @@
 import { TypedEmitter } from "tiny-typed-emitter";
-import { Device as T1Device } from "./thinq1/device.js";
-import { Device as T2Device } from "./thinq2/device.js";
+import { Device as T1Device } from "./thinq1/device";
+import { Device as T2Device } from "./thinq2/device";
 
 export type AnyDevice = T1Device | T2Device
 

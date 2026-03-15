@@ -1,8 +1,8 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
-        "module": "node16",
-        "moduleResolution": "node16",
+        "module": "esnext",
+        "moduleResolution": "bundler",
         "outDir": "dist",
         "allowJs": true,
         "esModuleInterop": true,
@@ -18,4 +18,8 @@
     },
 
     "include": [ "./**/*.ts" ],
+
+    "tsc-alias": {
+      "resolveFullPaths": true
+    }
 }

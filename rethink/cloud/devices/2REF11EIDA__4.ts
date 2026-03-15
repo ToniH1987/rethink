@@ -1,10 +1,10 @@
-import HADevice from './base.js'
-import { Device as Thinq2Device } from "../thinq2/device.js"
-import { DeviceDiscovery, type Connection } from '../homeassistant.js'
-import { type Metadata } from '../thinq.js'
-import { allowExtendedType } from '../../util/util.js'
-import AABBDevice from './aabb_device.js'
-import { convertFreezerTemperature, convertFridgeTemperature, freezerRange, fridgeRange, TemperatureUnit } from './fridge_common.js'
+import HADevice from './base'
+import { Device as Thinq2Device } from "../thinq2/device"
+import { DeviceDiscovery, type Connection } from '../homeassistant'
+import { type Metadata } from '../thinq'
+import { allowExtendedType } from '../../util/util'
+import AABBDevice from './aabb_device'
+import { convertFreezerTemperature, convertFridgeTemperature, freezerRange, fridgeRange, TemperatureUnit } from './fridge_common'
 
 const FLEX_OPTIONS = [ 'Chilled Wine', 'Deli/Snacks', 'Cold Drink', 'Meat/Seafood', 'Freezer' ]
 

@@ -1,6 +1,6 @@
 import * as tls from 'node:tls'
-import jsonSplitter from './util/json_splitter.js'
-import * as mtosp from './util/mtosp.js'
+import jsonSplitter from './util/json_splitter'
+import * as mtosp from './util/mtosp'
 
 if(process.argv.length != 5) {
 	console.warn(

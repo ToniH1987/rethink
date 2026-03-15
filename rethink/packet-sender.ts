@@ -1,4 +1,4 @@
-import * as TLV from './util/tlv.js'
+import * as TLV from './util/tlv'
 import * as mqtt from 'mqtt'
 
 if(process.argv.length < 9) {

@@ -1,13 +1,13 @@
 // This class handles the devices connecting to the internal MQTT broker. This includes both device provisioning
 // and minimal wrappers for actual data exchange. The device class is responsible for generating/parsing the payload.
 
-import { generateDeployResponse } from './provisioning.js'
+import { generateDeployResponse } from './provisioning'
 import { TypedEmitter } from 'tiny-typed-emitter';
-import { Client, PublishPacket, type Broker } from '../mqtt-broker.js'
-import { ClipDeployMessage } from './clip.js'
+import { Client, PublishPacket, type Broker } from '../mqtt-broker'
+import { ClipDeployMessage } from './clip'
 
-import log from '../../util/logging.js'
-import { Metadata } from '../thinq.js'
+import log from '../../util/logging'
+import { Metadata } from '../thinq'
 
 type DeviceEvents = {
     data: (packet: Buffer) => void;

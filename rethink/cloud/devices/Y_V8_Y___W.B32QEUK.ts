@@ -1,9 +1,9 @@
-import HADevice from './base.js'
-import { Device as Thinq2Device } from "../thinq2/device.js"
-import { type Connection } from '../homeassistant.js'
-import { type Metadata } from "../thinq.js"
-import { allowExtendedType } from '../../util/util.js'
-import AABBDevice from './aabb_device.js'
+import HADevice from './base'
+import { Device as Thinq2Device } from "../thinq2/device"
+import { type Connection } from '../homeassistant'
+import { type Metadata } from "../thinq"
+import { allowExtendedType } from '../../util/util'
+import AABBDevice from './aabb_device'
 
 /* official integration exposes these:
 

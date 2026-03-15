@@ -1,11 +1,11 @@
-import TLVDevice, { FieldDefinition } from './tlv_device.js'
-import { Device as Thinq2Device } from "../thinq2/device.js"
-import { Config, type Connection } from '../homeassistant.js'
-import { type Metadata } from '../thinq.js'
-import { allowExtendedType } from '../../util/util.js'
-import * as TLV from "../../util/tlv.js";
-import log from '../../util/logging.js'
-import HADevice from './base.js'
+import TLVDevice, { FieldDefinition } from './tlv_device'
+import { Device as Thinq2Device } from "../thinq2/device"
+import { Config, type Connection } from '../homeassistant'
+import { type Metadata } from '../thinq'
+import { allowExtendedType } from '../../util/util'
+import * as TLV from "../../util/tlv"
+import log from '../../util/logging'
+import HADevice from './base'
 
 type PowerOnHook = () => void
 type CheckMode = (number) => boolean

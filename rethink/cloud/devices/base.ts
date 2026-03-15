@@ -1,6 +1,6 @@
-import { TLV } from "../../util/tlv.js";
-import { type Metadata } from "../thinq.js"
-import type { Connection, Config, DeviceDiscovery, ComponentDiscovery } from '../homeassistant.js'
+import { TLV } from "../../util/tlv";
+import { type Metadata } from "../thinq"
+import type { Connection, Config, DeviceDiscovery, ComponentDiscovery } from '../homeassistant'
 
 export default class HADevice {
 	config: Config|undefined

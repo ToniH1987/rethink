@@ -1,11 +1,11 @@
 // base implementation for devices with a TLV-based payload format
-import HADevice from './base.js'
+import HADevice from './base'
 
-import crc16 from '../../util/crc16.js'
-import * as TLV from "../../util/tlv.js";
-import { Device as Thinq2Device } from "../thinq2/device.js"
-import { type Config, type Connection } from '../homeassistant.js';
-import log from '../../util/logging.js'
+import crc16 from '../../util/crc16'
+import * as TLV from "../../util/tlv"
+import { Device as Thinq2Device } from "../thinq2/device"
+import { type Config, type Connection } from '../homeassistant'
+import log from '../../util/logging'
 
 export type FieldDefinition = {
     id?: number;

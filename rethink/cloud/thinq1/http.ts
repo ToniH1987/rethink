@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express'
-import { Config } from '../../util/config.js';
+import { Config } from '../../util/config';
 import { XMLParser, XMLBuilder, XMLValidator} from 'fast-xml-parser';
-import { Metadata } from '../thinq.js';
+import { Metadata } from '../thinq';
 
 const XML_HEADER = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>'
 

@@ -1,10 +1,10 @@
-import TLVDevice from './tlv_device.js'
-import { Device as Thinq2Device } from "../thinq2/device.js"
-import { Config, type Connection }  from '../homeassistant.js'
-import { type Metadata } from "../thinq.js"
-import { allowExtendedType } from '../../util/util.js';
-import * as TLV from "../../util/tlv.js";
-import HADevice from './base.js';
+import TLVDevice from './tlv_device'
+import { Device as Thinq2Device } from "../thinq2/device"
+import { Config, type Connection }  from '../homeassistant'
+import { type Metadata } from "../thinq"
+import { allowExtendedType } from '../../util/util'
+import * as TLV from "../../util/tlv"
+import HADevice from './base'
 
 /**
  * LG Air Conditioner Model LW1823HRSM

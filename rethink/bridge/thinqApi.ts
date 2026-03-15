@@ -1,9 +1,9 @@
 import { createHash, publicEncrypt, randomBytes } from 'node:crypto';
-import * as OAuth2 from './oauth2.js'
+import * as OAuth2 from './oauth2'
 import { RSA_PKCS1_PADDING } from 'node:constants';
-import { subprocess } from './util.js';
+import { subprocess } from './util';
 import fetch, { type RequestInit } from 'node-fetch';
-import { Metadata } from '../cloud/thinq.js';
+import { Metadata } from '../cloud/thinq';
 
 const IOT_BASE_URL = 'https://common.lgthinq.com'
 const GATEWAY_URL = 'https://route.lgthinq.com:46030/v1/service/application/gateway-uri'

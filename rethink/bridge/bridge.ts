@@ -1,11 +1,11 @@
-import { Client as ThinqClient, Device as ClientDevice, Environment, signInUrl, Thinq1Device, Thinq2Device} from "./thinqApi.js"
-import { AnyDevice, DeviceManager } from "../cloud/devmgr.js"
-import * as OAuth2 from './oauth2.js'
-import { BridgeState } from "./state.js"
-import { Connection as Thinq1Connection } from "./thinq1connection.js"
-import { Connection as Thinq2Connection } from "./thinq2connection.js"
-import { Device as T1Downstream } from '../cloud/thinq1/device.js'
-import { Device as T2Downstream } from '../cloud/thinq2/device.js'
+import { Client as ThinqClient, Device as ClientDevice, Environment, signInUrl, Thinq1Device, Thinq2Device} from "./thinqApi"
+import { AnyDevice, DeviceManager } from "../cloud/devmgr"
+import * as OAuth2 from './oauth2'
+import { BridgeState } from "./state"
+import { Connection as Thinq1Connection } from "./thinq1connection"
+import { Connection as Thinq2Connection } from "./thinq2connection"
+import { Device as T1Downstream } from '../cloud/thinq1/device'
+import { Device as T2Downstream } from '../cloud/thinq2/device'
 import { TypedEmitter } from 'tiny-typed-emitter';
 
 type StatusCallback = (string) => void

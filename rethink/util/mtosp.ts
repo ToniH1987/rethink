@@ -6,7 +6,7 @@
 // crc: 16-bit big-endian
 // 0xbb
 
-import crc16 from './crc16.js'
+import crc16 from './crc16'
 
 export function splitter() {
 	let state = 0
