@@ -103,7 +103,7 @@ export default class TLVDevice extends HADevice {
 
     // HA-side
     setProperty(prop: string, mqttValue: string) {
-        //console.log("HA write ", prop, value)
+        //console.log("HA write", prop, mqttValue)
         const def = this.fields_by_ha[prop]
         if(!def || def.writable === false) {
             console.warn(`Attempting to set property ${prop} which is not writable`)
