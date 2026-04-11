@@ -21,7 +21,7 @@ export default class AABBDevice extends HADevice {
         const sum = packet.reduce((pv, cv) => pv+cv, 0)
         packet[packet.length-2] = (sum & 0xff) ^ 0x55
         packet[packet.length-1] = 0xbb
-        this.thinq.send(packet)
+        this.thinq.send_packet(packet)
     }
 
     processData(buf: Buffer) {

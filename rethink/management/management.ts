@@ -206,7 +206,7 @@ export function app(ha: HA_bridge, manager: DeviceManager, bridge: Bridge | unde
                 if(typeof(json.sendToDevice) === 'string' && dev && dev instanceof T2Device) {
                     try {
                         injectFlag = true
-                        dev.send(Buffer.from(json.sendToDevice, 'hex'))
+                        dev.send_packet(Buffer.from(json.sendToDevice, 'hex'))
                     } finally {
                         injectFlag = false
                     }

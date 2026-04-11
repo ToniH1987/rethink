@@ -107,7 +107,7 @@ export default class TLVDevice extends HADevice {
 		let buf = [0x04, 0x00, 0x00, 0x00, 0x65, b2, b3, b4, tlvArray.length].concat(tlvArray)
 		const result = crc16(buf)
 		buf = [ b0, b1 ].concat(buf, [ result >> 8, result & 0xff])
-        this.thinq.send(Buffer.from(buf))
+        this.thinq.send_packet(Buffer.from(buf))
     }
 
     processTLV(tlvArray: TLV.TLV[]) {

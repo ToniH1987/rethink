@@ -48,7 +48,7 @@ class BridgedDevice {
 
         } else if(U instanceof Thinq2Device && D instanceof T2Downstream) {
             this.connection = new Thinq2Connection(U)
-            this.connection.on('data', (payload) => D.send(payload))
+            this.connection.on('data', (payload) => D.send_packet(payload))
         } else {
             console.warn("Can't connect bridge")
             return
