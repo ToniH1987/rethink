@@ -89,6 +89,10 @@ export class DeviceAcceptor extends TypedEmitter<DeviceAcceptorEvents> {
 				const buf = Buffer.from(payload.data, 'hex')
 				client.deviceObj.emit('data', buf)
 			}
+
+			if(payload.cmd === 'req_timesync' && client.deviceObj && payload.did === client.deviceObj.id) {
+				this.timeSyncRequest(client)
+			}
 		}
 
 		if(topic === 'clip/provisioning/devices/' + payload.did) {
@@ -131,6 +135,20 @@ export class DeviceAcceptor extends TypedEmitter<DeviceAcceptorEvents> {
 		const dev = new Device(this.broker, 'lime/devices/' + deviceId, deviceId, meta)
 		client.deviceObj = dev
 		this.emit('newDevice', dev)
+	}
+
+	timeSyncRequest(client: ClientWithExtra) {
+		const now = new Date()
+		const buf = Buffer.alloc(7)
+		buf[0] = now.getUTCFullYear() % 100
+		buf[1] = now.getUTCMonth()
+		buf[2] = now.getUTCDate()
+		buf[3] = now.getUTCHours()
+		buf[4] = now.getUTCMinutes()
+		buf[5] = now.getUTCSeconds()
+		buf[6] = now.getUTCDay()
+
+		client.deviceObj?.send("resp_timesync", 1, buf.toString('base64'))
 	}
 
 	disconnected(client) {
