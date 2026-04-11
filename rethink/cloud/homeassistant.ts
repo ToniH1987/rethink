@@ -132,6 +132,7 @@ export class Connection extends TypedEmitter<ConnectionEvents> {
 			'$deviceid': id
 		}
 		const configPayload = JSON.stringify(recursiveReplace(config, replacements))
+		log('publish', configPayload)
 		this.client.publish(discoveryTopic + '/config' , configPayload)
 	}
 
