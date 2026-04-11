@@ -5,6 +5,7 @@ import crc16 from '../../util/crc16.js'
 import * as TLV from "../../util/tlv.js";
 import { Device as Thinq2Device } from "../thinq2/device.js"
 import { type Config, type Connection } from '../homeassistant.js';
+import log from '../../util/logging.js'
 
 export type FieldDefinition = {
     id?: number;
@@ -19,6 +20,7 @@ export type FieldDefinition = {
 }
 
 export default class TLVDevice extends HADevice {
+    query_timer: ReturnType<typeof setInterval> | undefined
     fields_by_id: Record<number, FieldDefinition> = {}
     fields_by_ha: Record<string, FieldDefinition> = {}
     raw_clip_state: Record<number, number> = {}
@@ -49,8 +51,27 @@ export default class TLVDevice extends HADevice {
 	}
 
     // clip-side
-    start() {
+    query() {
         this.send([1,1,2,2,1], [{t: 0x1f5, v: 2 }])
+    }
+
+    start() {
+	this.query()
+
+	// Refresh every 15 minutes since not every tag change generates async notify
+	this.query_timer = setInterval(() => {
+	    log('status', this.id, 'sending periodic refresh query')
+	    this.query()
+	}, 15 * 60 * 1000)
+    }
+
+    drop() {
+	if(this.query_timer != undefined) {
+	    clearInterval(this.query_timer)
+	    this.query_timer = undefined
+	}
+
+	super.drop()
     }
 
     processData(buf: Buffer) {
