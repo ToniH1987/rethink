@@ -30,6 +30,8 @@ export default class Device extends TLVDevice {
 			read_callback: (val) => {
 				// update 'mode' instead
 				this.processKeyValue(0x1f9, this.raw_clip_state[0x1f9])
+
+				return false
 			}
 		})
 

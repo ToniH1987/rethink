@@ -15,8 +15,8 @@ export type FieldDefinition = {
     write_xform?: (val: string) => string|number|null|undefined,
     write_attach?: number[] | ((val: unknown) => number[]),
     read_xform?: (val: number) => string|number|undefined, // undefined return values are discarded
-    read_callback?: (val: string|number) => void,
-    write_callback?: (val: number) => void,
+    read_callback?: (val: string|number) => boolean,
+    write_callback?: (val: number) => boolean,
 }
 
 export default class TLVDevice extends HADevice {
@@ -112,9 +112,10 @@ export default class TLVDevice extends HADevice {
             processed = tmp
         }            
 
+        var doRead = true
         if(def.read_callback)
-            def.read_callback(processed)
-        else {
+            doRead = def.read_callback(processed)
+        if(doRead) {
             if(def.readable === false)
                 return
 
@@ -141,9 +142,11 @@ export default class TLVDevice extends HADevice {
         if(typeof(value) === 'string')
             value = Number(value)
 
-        if(def.write_callback) {
-            def.write_callback(value)
-        } else if(def.id !== undefined) {
+
+        var doWrite = true
+        if(def.write_callback)
+            doWrite = def.write_callback(value)
+        if(doWrite && def.id !== undefined) {
             this.raw_clip_state[def.id] = value
 
             let attach: number[] = []
