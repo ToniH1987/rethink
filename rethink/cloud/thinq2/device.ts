@@ -52,7 +52,7 @@ export class DeviceAcceptor extends TypedEmitter<DeviceAcceptorEvents> {
 		super()
 
 		broker.on('publish', (packet, client) => {
-			log('incoming', packet.topic, packet.payload.toString('utf-8'))
+			log('incoming', packet.topic, packet.payload.toString('utf-8'), 'retain:', packet.retain)
 
 			if(!client)
 				return;
