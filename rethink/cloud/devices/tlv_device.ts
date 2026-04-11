@@ -10,6 +10,8 @@ import log from '../../util/logging.js'
 export type FieldDefinition = {
     id?: number;
     name: string;
+    comp?: string;
+    state_topic?: string;
     readable?: boolean;
     writable?: boolean;
     write_xform?: (val: string) => string|number|null|undefined,
@@ -35,18 +37,34 @@ export default class TLVDevice extends HADevice {
 		if(options.id)
 			this.fields_by_id[options.id] = options
 
-		if(options.name)
-			this.fields_by_ha[options.name] = options
+		let fullName: string = ''
+		if (options.comp != null) {
+			fullName = options.comp + '-' + options.name
+		} else {
+			fullName = options.name
+		}
+		if(options.comp || options.name) {
+			this.fields_by_ha[fullName] = options
+		}
 
 		if(autoreg !== false) {
-			if(options.writable === false)
-				config[options.name + '_topic'] = '$this/' + options.name
-			else {
-				if(options.readable !== false)
-					config[options.name + '_state_topic'] = '$this/' + options.name
-
-				config[options.name + '_command_topic'] = '$this/' + options.name + '/set'
+			let topicPrefix: string = ''
+			if(options.name !== '') {
+				topicPrefix = options.name + '_'
 			}
+
+			if (options.comp != null) {
+				config = config['components'][options.comp]
+			}
+
+			if(options.readable !== false) {
+				const stateTopic = options.state_topic == null ?
+						   'state_topic' : options.state_topic
+				config[topicPrefix + stateTopic] = '$this/' + fullName
+			}
+
+			if(options.writable !== false)
+				config[topicPrefix + 'command_topic'] = '$this/' + fullName + '/set'
 		}
 	}
 
@@ -119,7 +137,14 @@ export default class TLVDevice extends HADevice {
             if(def.readable === false)
                 return
 
-            this.HA.publishProperty(this.id, def.name, processed)
+            let fullName: string = ''
+            if (def.comp != null) {
+                fullName = def.comp + '-' + def.name
+            } else {
+                fullName = def.name
+            }
+
+            this.HA.publishProperty(this.id, fullName, processed)
         }
     }
 

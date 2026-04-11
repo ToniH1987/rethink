@@ -19,7 +19,7 @@ export default class Device extends TLVDevice {
 		})
 
 		this.addField(config, {
-			id: 0x1fd, name: 'current_temperature', writable: false,
+			id: 0x1fd, name: 'current_temperature', state_topic: 'topic', writable: false,
 			read_xform: (raw) => raw/2
 		})
 		this.addField(config, {
