@@ -119,7 +119,18 @@ export default class TLVDevice extends HADevice {
             log('status', this.id, 'received TLV packet')
             this.processTLV(TLV.parse(buf.subarray(11, buf.length-2)))
         }
-	}
+        if(buf[1] == 0xff && buf[2] == 0x04 && buf[3] == 0x00 && buf[4] == 0x00 &&
+            buf[5] == 0x00 && buf[6] == 0x87 && buf[7] == 0xfd && buf[8] == 0x03 &&
+            buf[10] == buf.length-13) {
+            this.processPrivData(buf[0], buf[9], buf.subarray(11, buf.length - 2))
+        }
+        if((buf[0] == 0x02 || buf[0] == 0x03) && buf[2] == 0x04 && buf[3] == 0x00 && buf[4] == 0x00 &&
+            buf[5] == 0x00 && buf[6] == 0x87 && buf[7] == 0xfd && buf[8] == 0x10 &&
+            buf[9] == 0x00 && buf[10] == 0x05 && buf[11] == 0xfe && buf[12] != null) {
+            this.processPrivDataCmdResp(buf[0] == 0x02, buf[1], buf[12],
+              buf.subarray(13, buf.length - 2))
+        }
+    }
 
     send(header: number[], tlv: TLV.TLV[]) {
 		const [b0, b1, b2, b3, b4] = header
@@ -135,8 +146,28 @@ export default class TLVDevice extends HADevice {
         return false;
     }
 
+    sendPrivCommand(cmd: number, cmd_sub: number, data: Buffer = Buffer.alloc(0)) {
+        const cmdDataLen = data.length + 1
+        const header = Buffer.from([0x00, 0xff, 0x04, 0x00, 0x00, 0x00, 0x65, 0xfd, cmd_sub,
+            cmdDataLen >> 8, cmdDataLen & 0xff, cmd])
+        let buf = Buffer.concat([header, data])
+
+        const crc = crc16(buf.subarray(2))
+        buf = Buffer.concat([buf, Buffer.from([crc >> 8, crc & 0xff])])
+
+        this.thinq.send_packet(buf)
+    }
+
     capabilityReceived() {
         /* To be overridden if necessary */
+    }
+
+    processPrivData(cmd: number, buf9: number, data: Buffer) {
+        /* To be overridden */
+    }
+
+    processPrivDataCmdResp(success: boolean, buf1: number, cmd: number, data: Buffer) {
+        /* To be overridden */
     }
 
     processTLV(tlvArray: TLV.TLV[]) {
