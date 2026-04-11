@@ -26,10 +26,20 @@ export default class TLVDevice extends HADevice {
     fields_by_id: Record<number, FieldDefinition> = {}
     fields_by_ha: Record<string, FieldDefinition> = {}
     raw_clip_state: Record<number, number> = {}
+    query_caps_timeout: ReturnType<typeof setInterval> | undefined = undefined
 
     constructor(HA: Connection, ha_class, readonly thinq: Thinq2Device) {
         super(HA, ha_class, thinq.id)
         thinq.on('data', (data) => this.processData(data))
+
+	// initial capabilities query
+	this.queryCaps()
+
+	// retry every 15 s until caps are received
+	this.query_caps_timeout = setInterval(() => {
+		log('status', this.id, 're-trying capabilities query due to timeout')
+		this.queryCaps()
+	}, 15 * 1000);
     }
 
     // we waste memory by storing the field set per-device, not per-class. Whatever.
@@ -69,6 +79,10 @@ export default class TLVDevice extends HADevice {
 	}
 
     // clip-side
+    queryCaps() {
+        this.send([1,1,2,2,1], [{t: 0x1f5, v: 1 }])
+    }
+
     query() {
         this.send([1,1,2,2,1], [{t: 0x1f5, v: 2 }])
     }
@@ -89,14 +103,20 @@ export default class TLVDevice extends HADevice {
 	    this.query_timer = undefined
 	}
 
+	if(this.query_caps_timeout != undefined) {
+	    clearInterval(this.query_caps_timeout)
+	    this.query_caps_timeout = undefined
+	}
+
 	super.drop()
     }
 
     processData(buf: Buffer) {
-        if(buf[2] == 0x04 && buf[3] == 0x00 && buf[4] == 0x00 && buf[5] == 0x00 && buf[6] == 0x87 && buf[7] == 0x02 && buf[8] == 0x04
+        if(buf[2] == 0x04 && buf[3] == 0x00 && buf[4] == 0x00 && buf[5] == 0x00 && buf[6] == 0x87 && buf[7] == 0x02 && (buf[8] == 0x01 || buf[8] == 0x04)
             /* && buf[9] is a "sequence" number */ && buf[10] == buf.length-13) {
 
             // ignore the CRC, we assume that the modem verifies it :/
+            log('status', this.id, 'received TLV packet')
             this.processTLV(TLV.parse(buf.subarray(11, buf.length-2)))
         }
 	}
@@ -110,8 +130,25 @@ export default class TLVDevice extends HADevice {
         this.thinq.send_packet(Buffer.from(buf))
     }
 
+    isCapsResponse(tlvArray: TLV.TLV[]) {
+        /* To be overridden */
+        return false;
+    }
+
+    capabilityReceived() {
+        /* To be overridden if necessary */
+    }
+
     processTLV(tlvArray: TLV.TLV[]) {
         tlvArray.forEach(({t, v}) => this.processKeyValue(t, v))
+
+        if(this.query_caps_timeout != undefined &&
+            this.isCapsResponse(tlvArray)) {
+            log('status', this.id, 'received capability key')
+            clearInterval(this.query_caps_timeout)
+            this.query_caps_timeout = undefined
+            this.capabilityReceived()
+        }
     }
 
     processKeyValue(k: number, v: number) {

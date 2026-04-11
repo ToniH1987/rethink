@@ -3,6 +3,7 @@ import { Device as Thinq2Device } from "../thinq2/device.js"
 import { Config, type Connection } from '../homeassistant.js'
 import { type Metadata } from '../thinq.js'
 import { allowExtendedType } from '../../util/util.js'
+import * as TLV from "../../util/tlv.js";
 import HADevice from './base.js'
 
 export default class Device extends TLVDevice {
@@ -103,5 +104,10 @@ export default class Device extends TLVDevice {
 		})
 
 		this.setConfig(config)
+	}
+
+	isCapsResponse(tlvArray: TLV.TLV[]) {
+		/* eeprom checksum */
+		return tlvArray.some(({t, v}) => t === 0x2da)
 	}
 }
