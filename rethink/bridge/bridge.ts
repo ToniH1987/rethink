@@ -55,11 +55,6 @@ class BridgedDevice {
         }
 
         this.connection.on('close', () => this.disconnect())
-
-        this.connection.on('data', (data: Buffer | object) => {
-            this.downstream.send(data as any)
-        })
-
         this.connection.on('error', console.log)
     }
 
