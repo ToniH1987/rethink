@@ -5,6 +5,7 @@ import { splitter, make as makeFrame } from '../util/length_prefixed_frame.js'
 import fetch from 'node-fetch';
 import * as HTTPS from 'node:https';
 import { randomUUID } from 'node:crypto';
+import log from '../util/logging.js'
 
 type ConnectionEvents = {
     data: (payload: object) => void;
@@ -42,7 +43,7 @@ export class Connection extends TypedEmitter<ConnectionEvents> {
         })
         await resp.text();
 
-        console.log(`Connecting to ${state.rtiServer}`)
+        log('bridge', `${this.device.deviceId} connecting to ${state.rtiServer}`)
         const [ host, port ] = state.rtiServer.split(':');
 
         const sendAlive = () => {
@@ -62,7 +63,7 @@ export class Connection extends TypedEmitter<ConnectionEvents> {
                 rejectUnauthorized: false /*FIXME*/
             }, 
             () => {
-                console.log('connected')
+                log('bridge', `${this.device.deviceId} connected`)
                 setInterval(sendAlive, 60000)
                 sendAlive()
 
@@ -102,6 +103,7 @@ export class Connection extends TypedEmitter<ConnectionEvents> {
                         return
                     }
 
+                    log('bridge', `${this.device.deviceId} <- ${JSON.stringify(j.Body)}`)
                     this.emit('data', j.Body)
 
                     if(j.Body.ReturnCode === undefined) {
@@ -123,7 +125,7 @@ export class Connection extends TypedEmitter<ConnectionEvents> {
         }))
 
         this.socket.on('close', () => {
-            console.log('disconnected');
+            log('bridge', `${this.device.deviceId} disconnected`)
             this.emit('close')
         })
         this.socket.on('error', (err) => this.emit('error', err))
@@ -138,6 +140,8 @@ export class Connection extends TypedEmitter<ConnectionEvents> {
         // CmdWId: n-$DevideID
         // ReturnCode: 0000
         this.lastState = data
+        log('bridge', `${this.device.deviceId} -> ${data.toString('hex')}`)
+
         if(this.isLive)
             this.writeJSON({
                 Header: { "x-lgedm-deviceId": this.device.deviceId},

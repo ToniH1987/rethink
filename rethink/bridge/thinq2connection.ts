@@ -1,6 +1,7 @@
 import * as mqtt from 'mqtt'
 import { Thinq2Device } from './thinqApi.js'
 import { TypedEmitter } from 'tiny-typed-emitter';
+import log from '../util/logging.js'
 
 type ConnectionEvents = {
     data: (buffer: Buffer) => void;
@@ -15,7 +16,7 @@ export class Connection extends TypedEmitter<ConnectionEvents> {
     constructor(readonly device: Thinq2Device) {
         super()
         const state = this.device.state!
-        console.log(`Connecting to ${state.mqttServer}`)
+        log('bridge', `${this.device.deviceId} connecting to ${state.mqttServer}`)
         this.mqtt = mqtt.connect(state.mqttServer.replace('ssl', 'mqtts'), {
             ca: state.caCertificate, 
             key: state.privateKey, 
@@ -44,6 +45,7 @@ export class Connection extends TypedEmitter<ConnectionEvents> {
                     }
 
                     if(payload.cmd === 'packet') {
+                        log('bridge', `${this.device.deviceId} <- ${payload.data}`)
                         this.emit('data', Buffer.from(payload.data, 'hex'))
                     }
                 }
@@ -53,7 +55,7 @@ export class Connection extends TypedEmitter<ConnectionEvents> {
         })
         
         this.mqtt.on('connect', async () => {
-            console.log('connected')
+            log('bridge', `${this.device.deviceId} connected`)
             await this.mqtt.subscribe(this.device.state!.subTopic)
             await this.mqtt.publish(this.device.state!.provTopic, JSON.stringify({
                 mid: ++this.mid,
@@ -105,6 +107,7 @@ export class Connection extends TypedEmitter<ConnectionEvents> {
         if(Buffer.isBuffer(data))
             data = data.toString('hex').toUpperCase()
         
+        log('bridge', `${this.device.deviceId} -> ${data}`)
         this.mqtt.publish(this.device.state!.pubTopic, JSON.stringify({
             mid: ++this.mid,
             did: this.device.deviceId,
