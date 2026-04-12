@@ -1,6 +1,7 @@
 export type TLV = {
 	t: number,
-	v: number
+	l?: number,
+	v: number,
 }
 
 export function parse(buf: Buffer): TLV[] {
@@ -25,7 +26,7 @@ export function parse(buf: Buffer): TLV[] {
 			for(var j=0;j<l;j++)
 				v = (v<<8)|buf[i+2+j]
 		}
-		out.push({ t, v })
+		out.push({ t, l, v })
 		i += 2 + l	
 	}
 	return out
