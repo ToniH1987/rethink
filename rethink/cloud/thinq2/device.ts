@@ -4,7 +4,7 @@
 import { generateDeployResponse } from './provisioning'
 import { TypedEmitter } from 'tiny-typed-emitter';
 import { Client, PublishPacket, type Broker } from '../mqtt-broker'
-import { ClipDeployMessage } from './clip'
+import { ClipDeployMessage, ClipMessage } from './clip'
 
 import log from '@/util/logging'
 import { Metadata } from '../thinq'
@@ -76,7 +76,7 @@ export class DeviceAcceptor extends TypedEmitter<DeviceAcceptorEvents> {
 		broker.on('disconnect', this.disconnected.bind(this))
 	}
 
-	mqtt(topic: string, payload, client: ClientWithExtra) {
+	mqtt(topic: string, payload: ClipMessage, client: ClientWithExtra) {
 		// experiment: try to support devices which use other topic formats
 		topic = topic.replace(/^.*\/clip/, "clip")
 
@@ -86,7 +86,7 @@ export class DeviceAcceptor extends TypedEmitter<DeviceAcceptorEvents> {
 			}
 
 			if(payload.cmd === 'device_packet' && client.deviceObj && payload.did === client.deviceObj.id) {
-				const buf = Buffer.from(payload.data, 'hex')
+				const buf = Buffer.from(payload.data as string, 'hex')
 				client.deviceObj.emit('data', buf)
 			}
 
@@ -97,18 +97,18 @@ export class DeviceAcceptor extends TypedEmitter<DeviceAcceptorEvents> {
 
 		if(topic === 'clip/provisioning/devices/' + payload.did) {
 			if(payload.cmd === 'preDeploy' || payload.cmd === 'deploy') {
-				client.deployMsg = payload
+				client.deployMsg = payload as ClipDeployMessage
 				this.broker.publish({
 						topic: 'lime/devices/' + payload.did,
 						retain: false,
 						qos: 0,
 						dup: false,
-						payload: JSON.stringify(generateDeployResponse(payload))}, null)
+						payload: JSON.stringify(generateDeployResponse(payload as ClipDeployMessage))}, null)
 			}
 		}
 	}
 
-	completeProvisioning(deviceId: string, payload, client: ClientWithExtra) {
+	completeProvisioning(deviceId: string, payload: ClipMessage, client: ClientWithExtra) {
 		if(!client.deployMsg) {
 			console.warn("completeProvisioning_ack received without deploy/preDeploy")
 			return
@@ -151,12 +151,13 @@ export class DeviceAcceptor extends TypedEmitter<DeviceAcceptorEvents> {
 		client.deviceObj?.send("resp_timesync", 1, buf.toString('base64'))
 	}
 
-	disconnected(client) {
+	disconnected(_client: Client) {
+		let client = _client as ClientWithExtra
 		if(client.deviceObj) {
 			delete this.clientsById[client.deviceObj.id]
 			this.emit('dropDevice', client.deviceObj.id)
 			client.deviceObj.emit('close')
-			client.deviceObj = null
+			client.deviceObj = undefined
 		}
 	}
 }

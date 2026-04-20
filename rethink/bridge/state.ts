@@ -8,9 +8,9 @@ export type Credentials = {
 
 export type BridgeState = {
     getCredentials(): Credentials | undefined
-    setCredentials(credentials: Credentials | undefined)
+    setCredentials(credentials: Credentials | undefined): void
     getDeviceState(id: string): Thinq1DeviceState|Thinq2DeviceState|undefined
-    setDeviceState(id: string, state:Thinq1DeviceState|Thinq2DeviceState|undefined)
+    setDeviceState(id: string, state:Thinq1DeviceState|Thinq2DeviceState|undefined): void
 }
 
 export class JSONStorage implements BridgeState {

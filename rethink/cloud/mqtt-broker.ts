@@ -8,12 +8,12 @@ export type PublishPacket = Omit<IPublishPacket, 'cmd'>;
 class Subscription {
 	re: RegExp
 
-	constructor(topicPattern) {
+	constructor(topicPattern: string) {
 		const re = "^" + topicPattern.replace(/#$/, '.*').replace(/\+/g, '[^/]*') + "$";
 		this.re = new RegExp(re)
 	}
 
-	match(topic) {
+	match(topic: string) {
 		return !!topic.match(this.re)
 	}
 }

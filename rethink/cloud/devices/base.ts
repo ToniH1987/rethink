@@ -39,7 +39,7 @@ export default class HADevice {
 		}
 	}
 
-	constructor(readonly HA: Connection, readonly ha_class, readonly id: string) {
+	constructor(readonly HA: Connection, readonly ha_class: string, readonly id: string) {
 	}
 
 	setConfig(config: Config) {

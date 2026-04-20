@@ -6,7 +6,7 @@ import { type Config, type Connection } from '../homeassistant'
 export default class AABBDevice extends HADevice {
     publishCache: Record<string, string|number> =  {}
 
-    constructor(HA: Connection, ha_class, readonly thinq: Thinq2Device) {
+    constructor(HA: Connection, ha_class: string, readonly thinq: Thinq2Device) {
         super(HA, ha_class, thinq.id)
         thinq.on('data', (data) => this.processData(data))
     }

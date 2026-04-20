@@ -1,6 +1,6 @@
 import TLVDevice, { FieldDefinition } from './tlv_device'
 import { Device as Thinq2Device } from "../thinq2/device"
-import { Config, type Connection } from '../homeassistant'
+import { ClimateComponent, DeviceDiscovery, type Connection } from '../homeassistant'
 import { type Metadata } from '../thinq'
 import { allowExtendedType } from '@/util/casting'
 import * as TLV from "@/util/tlv"
@@ -8,20 +8,20 @@ import log from '@/util/logging'
 import HADevice from './base'
 
 type PowerOnHook = () => void
-type CheckMode = (number) => boolean
+type CheckMode = (arg: number) => boolean
 export default class Device extends TLVDevice {
 	meta: Metadata
 	powerOnHooks: PowerOnHook[] = [ ]
-	powerStatePrev: boolean
+	powerStatePrev?: boolean
 	modeChangeHooks: PowerOnHook[] = [ ]
-	modePrev: string
+	modePrev?: string
 	airClean: boolean = false
 	jetMode: boolean = false
 	energySave: boolean = false
 	tlvBlacklistDisableTimer: ReturnType<typeof setTimeout> | undefined
-	filterUsedTime: number
-	filterLifeTime: number
-	filterChangedDate: number
+	filterUsedTime: number = 0
+	filterLifeTime: number = 0
+	filterChangedDate: number = 0
 	filterInitialQueryTimeout: ReturnType<typeof setTimeout> | undefined
 	filterQueryTimer: ReturnType<typeof setInterval> | undefined
 
@@ -162,7 +162,7 @@ export default class Device extends TLVDevice {
 	}
 
 	initMakeSetConfig() {
-		const config: Config = allowExtendedType({
+		const config: DeviceDiscovery & { components: { climate: ClimateComponent }}= allowExtendedType({
 		...HADevice.deviceConfig(this.meta, { name: 'LG Air Conditioner' }),
 			components: {
 				climate: {
@@ -179,7 +179,7 @@ export default class Device extends TLVDevice {
 					/* TODO: get from 0x2c2 */
 					fan_modes: [ 'auto', 'very low', 'low', 'medium', 'high', 'very high' ],
 					/* TODO: get allowed op modes from 0x2c1 */
-				},
+				} satisfies ClimateComponent,
 			}
 		})
 
@@ -223,7 +223,7 @@ export default class Device extends TLVDevice {
 				return true
 			},
 			write_xform: (val) => {
-				const modes2clip = { cool: 0, dry: 1, fan_only:2, heat:4, auto:6 }
+				const modes2clip: Record<string, number> = { cool: 0, dry: 1, fan_only:2, heat:4, auto:6 }
 				if (val === 'off') {
 		                    // Call function power (0x1f7) with value OFF
 		                    this.setProperty('climate-power', 'OFF')
@@ -241,7 +241,7 @@ export default class Device extends TLVDevice {
 				return modes2ha[raw]
 			},
 			write_xform: (val) => {
-				const modes2clip = { 'very low': 2, 'low': 3, 'medium': 4, 'high': 5, 'very high': 6, auto: 8 }
+				const modes2clip: Record<string, number> = { 'very low': 2, 'low': 3, 'medium': 4, 'high': 5, 'very high': 6, auto: 8 }
 				return modes2clip[val]
 			},
 			write_attach: [0x1f9, 0x1fe]
@@ -254,8 +254,7 @@ export default class Device extends TLVDevice {
 		})
 
 		if (this.raw_clip_state[0x2cd] & 4) {
-			const modes = [ '1', '2', '3', '4', '5', '6', 'on', 'off' ]
-			config['components']['climate']['swing_modes'] = modes
+			config['components']['climate']['swing_modes'] = [ '1', '2', '3', '4', '5', '6', 'on', 'off' ]
 			this.addField(config, {
 				id: 0x321, name: 'swing_mode', comp: 'climate',
 				read_xform: (raw) => {
@@ -264,7 +263,7 @@ export default class Device extends TLVDevice {
 					return modes2ha[raw]
 				},
 				write_xform: (val) => {
-					const modes2clip = { "off": 0, "1":1, "2":2, "3":3, "4":4, "5":5, "6":6, "on":100 }
+					const modes2clip: Record<string, number> = { "off": 0, "1":1, "2":2, "3":3, "4":4, "5":5, "6":6, "on":100 }
 					return modes2clip[val]
 				},
 				write_attach: [0x1f9, 0x1fa]
@@ -272,8 +271,7 @@ export default class Device extends TLVDevice {
 		}
 
 		if (this.raw_clip_state[0x2cd] & 8) {
-			const modes = [ '1', '2', '3', '4', '5', '1-3', '3-5', 'on', 'off' ]
-			config['components']['climate']['swing_horizontal_modes'] = modes
+			config['components']['climate']['swing_horizontal_modes'] = [ '1', '2', '3', '4', '5', '1-3', '3-5', 'on', 'off' ];
 			this.addField(config, {
 				id: 0x322, name: 'swing_horizontal_mode', comp: 'climate',
 				read_xform: (raw) => {
@@ -284,7 +282,7 @@ export default class Device extends TLVDevice {
 					return modes2ha[raw]
 				},
 				write_xform: (val) => {
-					const modes2clip = { "off": 0, "1":1, "2":2, "3":3, "4":4, "5":5, "1-3":13, "3-5":35, "on":100 }
+					const modes2clip: Record<string, number> = { "off": 0, "1":1, "2":2, "3":3, "4":4, "5":5, "1-3":13, "3-5":35, "on":100 }
 					return modes2clip[val]
 				},
 				write_attach: [0x1f9, 0x1fa]
@@ -442,7 +440,7 @@ export default class Device extends TLVDevice {
 		this.query()
 	}
 
-	addTimerField(config: Config, id: number,
+	addTimerField(config: DeviceDiscovery, id: number,
 		name: string, desc: string,
 		icon: string, max: number) {
 		const comp = {
@@ -456,7 +454,7 @@ export default class Device extends TLVDevice {
 			max: max,
 			step: 0.25,
 			mode: 'slider'
-		}
+		} as const;
 		config['components'][name] = comp
 
 		/*
@@ -470,7 +468,7 @@ export default class Device extends TLVDevice {
 		})
 	}
 
-	addJetField(config: Config, id: number, name: string, desc: string,
+	addJetField(config: DeviceDiscovery, id: number, name: string, desc: string,
 		icon: string, jetCool: boolean, jetHeat: boolean) {
 		const descFull = desc + ' ' + (jetCool ? 'cool' : '') +
 		((jetCool && jetHeat) ? '/' : '') + (jetHeat ? 'heat' : '')
@@ -546,22 +544,21 @@ export default class Device extends TLVDevice {
 		})
 	}
 
-	addOptionalSensorField(config: Config, id: number,
+	addOptionalSensorField(config: DeviceDiscovery, id: number,
 		name: string, desc: string, icon?: string, extra?: Record<string, unknown>,
 		read_xform?: FieldDefinition["read_xform"]) {
 		if (this.raw_clip_state[id] == null)
 			return;
 
 		const comp = {
+			icon: icon ?? undefined,
 			platform: 'sensor',
 			unique_id: '$deviceid-' + name,
 			name: desc,
 			entity_category: 'diagnostic',
 			...extra
 		}
-		if (icon != null) {
-			comp['icon'] = icon
-		}
+
 		config['components'][name] = comp
 
 		this.addField(config, {
@@ -573,7 +570,7 @@ export default class Device extends TLVDevice {
 		})
 	}
 
-	addConfigSwitchField(config: Config, id: number,
+	addConfigSwitchField(config: DeviceDiscovery, id: number,
 		name: string, desc: string, icon: string) {
 		const comp = {
 			platform: 'switch',
@@ -591,9 +588,9 @@ export default class Device extends TLVDevice {
 		})
 	}
 
-	addModeDependentConfigSwitchField(config: Config, id: number,
+	addModeDependentConfigSwitchField(config: DeviceDiscovery, id: number,
 		name: string, desc: string, icon: string,
-		field_name: string, check_mode?: CheckMode) {
+		field_name: 'airClean' | 'jetMode' | 'energySave', check_mode?: CheckMode) {
 		const comp = {
 			platform: 'switch',
 			unique_id: '$deviceid-' + name,

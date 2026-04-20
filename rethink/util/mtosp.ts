@@ -13,7 +13,7 @@ export function splitter() {
 	let prev = 0
 	let total = 0
 	let buf: number[] = []
-	return function(byte: number, callback: (string)=>void) {
+	return function(byte: number, callback: (arg: string)=>void) {
         buf.push(byte)
 
 		if(state == 0) {

@@ -4,13 +4,12 @@ import HADevice from './base'
 import crc16 from '@/util/crc16'
 import * as TLV from "@/util/tlv"
 import { Device as Thinq2Device } from "../thinq2/device"
-import { type Config, type Connection } from '../homeassistant'
+import { ComponentDiscovery, DeviceDiscovery, type Config, type Connection } from '../homeassistant'
 import log from '@/util/logging'
 
 export type FieldDefinition = {
     id?: number;
     name: string;
-    comp?: string;
     state_topic?: string;
     readable?: boolean;
     writable?: boolean;
@@ -21,14 +20,18 @@ export type FieldDefinition = {
     write_callback?: (val: number) => boolean,
 }
 
+export type ComponentFieldDefinition = FieldDefinition & {
+    comp: string;
+}
+
 export default class TLVDevice extends HADevice {
     query_timer: ReturnType<typeof setInterval> | undefined
-    fields_by_id: Record<number, FieldDefinition> = {}
-    fields_by_ha: Record<string, FieldDefinition> = {}
+    fields_by_id: Record<number, FieldDefinition|ComponentFieldDefinition> = {}
+    fields_by_ha: Record<string, FieldDefinition|ComponentFieldDefinition> = {}
     raw_clip_state: Record<number, number> = {}
     query_caps_timeout: ReturnType<typeof setInterval> | undefined = undefined
 
-    constructor(HA: Connection, ha_class, readonly thinq: Thinq2Device) {
+    constructor(HA: Connection, ha_class: string, readonly thinq: Thinq2Device) {
         super(HA, ha_class, thinq.id)
         thinq.on('data', (data) => this.processData(data))
 
@@ -43,17 +46,19 @@ export default class TLVDevice extends HADevice {
     }
 
     // we waste memory by storing the field set per-device, not per-class. Whatever.
-	addField(config: Config, options: FieldDefinition, autoreg?: boolean) {
+    addField(config: ComponentDiscovery, options: FieldDefinition, autoreg?: boolean): void;
+    addField(config: DeviceDiscovery, options: ComponentFieldDefinition, autoreg?: boolean): void;
+	addField(config: Config, options: FieldDefinition|ComponentFieldDefinition, autoreg?: boolean) {
 		if(options.id)
 			this.fields_by_id[options.id] = options
 
 		let fullName: string = ''
-		if (options.comp != null) {
+		if ('comp' in options) {
 			fullName = options.comp + '-' + options.name
 		} else {
 			fullName = options.name
 		}
-		if(options.comp || options.name) {
+		if(fullName !== '') {
 			this.fields_by_ha[fullName] = options
 		}
 
@@ -63,18 +68,22 @@ export default class TLVDevice extends HADevice {
 				topicPrefix = options.name + '_'
 			}
 
-			if (options.comp != null) {
-				config = config['components'][options.comp]
-			}
+            let target: any
+
+			if ('comp' in options) {
+				target = (config as DeviceDiscovery)['components'][options.comp]
+			} else {
+                target = config
+            }
 
 			if(options.readable !== false) {
 				const stateTopic = options.state_topic == null ?
 						   'state_topic' : options.state_topic
-				config[topicPrefix + stateTopic] = '$this/' + fullName
+				target[topicPrefix + stateTopic] = '$this/' + fullName
 			}
 
 			if(options.writable !== false)
-				config[topicPrefix + 'command_topic'] = '$this/' + fullName + '/set'
+				target[topicPrefix + 'command_topic'] = '$this/' + fullName + '/set'
 		}
 	}
 
@@ -206,7 +215,7 @@ export default class TLVDevice extends HADevice {
                 return
 
             let fullName: string = ''
-            if (def.comp != null) {
+            if ('comp' in def) {
                 fullName = def.comp + '-' + def.name
             } else {
                 fullName = def.name

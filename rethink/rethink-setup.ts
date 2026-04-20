@@ -87,7 +87,7 @@ function thinq2Setup() {
 			socket.write(JSON.stringify({type: "request", cmd: "setDeviceInit", data: { set: "true", constantConnect: "Y"}}))
 		})
 
-		function onMessage(json) {
+		function onMessage(json: any) {
 			console.log(json)
 
 			if(json.type === 'response') {
@@ -140,7 +140,7 @@ function thinq2Setup() {
 		await thinq1Setup();
 
 	} catch(err) {
-		console.log('ThinQ 1 setup failed', err.toString())
+		console.log('ThinQ 1 setup failed', err)
 		console.log('Trying ThinQ 2 setup')
 		thinq2Setup();
 	}

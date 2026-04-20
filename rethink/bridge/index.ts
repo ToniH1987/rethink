@@ -8,7 +8,7 @@ import { Device as T1Downstream } from '@/cloud/thinq1/device'
 import { Device as T2Downstream } from '@/cloud/thinq2/device'
 import { TypedEmitter } from 'tiny-typed-emitter';
 
-type StatusCallback = (string) => void
+type StatusCallback = (status: string) => void
 
 const RECONNECT_PERIOD = 5000
 
@@ -16,13 +16,14 @@ class BridgedDevice {
     // upstream - our connection to the ThinQ cloud
     // downstream - the physical device
     constructor(readonly upstream: ClientDevice, readonly downstream: AnyDevice) {
+        // we create the functions at runtime so that they have unique identities that can be removed with removeListener
+        this.onDownstreamData = (packet: Buffer) => this.connection?.send(packet);
+        this.onDownstreamClose = () => this.destroy()
+
         if(this.upstream.platformType !== this.downstream.platform) {
             console.warn("Bridge device types don't match");
             return;
         }
-        // we create the functions at runtime so that they have unique identities that can be removed with removeListener
-        this.onDownstreamData = (packet: Buffer) => this.connection?.send(packet);
-        this.onDownstreamClose = () => this.destroy()
 
         downstream.on('data', this.onDownstreamData)
         downstream.on('close', this.onDownstreamClose)

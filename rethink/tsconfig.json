@@ -11,8 +11,7 @@
 
         "paths": { "@/*": ["./*"] },
 
-        // TODO?: "strict": true,
-        "strictNullChecks": true, // TODO?: can be removed once "strict" is enabled
+        "strict": true,
         "noUncheckedSideEffectImports": true,
         "skipLibCheck": true
     },

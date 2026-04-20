@@ -363,7 +363,7 @@ export class Thinq2Device implements Device {
     }
 }
 
-export const ErrorStrings = {
+export const ErrorStrings: Record<string, string> = {
     "0000": "SUCCESS_OK", 
     "0004": "ERROR_DUPLICATED_LOGIN", 
     "0007": "ERROR_NO_SERVICE", 

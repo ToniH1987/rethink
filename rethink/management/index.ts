@@ -115,7 +115,7 @@ export function app(ha: HA_bridge, manager: DeviceManager, bridge: Bridge | unde
                     res.status(400).end()
 
             } catch(err) {
-                res.status(500).end(err.toString())
+                res.status(500).end(`${err}`)
             }
         }))
 
@@ -235,7 +235,7 @@ export function app(ha: HA_bridge, manager: DeviceManager, bridge: Bridge | unde
 }
 
 function asyncHandler(handler: (req: Request, res: Response) => Promise<any>) {
-    return (req, res, next) => {
+    return (req: Request, res: Response, next: (err: any)=>void) => {
         handler(req, res).catch(next)
     }
 }

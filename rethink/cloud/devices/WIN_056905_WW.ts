@@ -1,6 +1,6 @@
 import TLVDevice from './tlv_device'
 import { Device as Thinq2Device } from "../thinq2/device"
-import { Config, type Connection }  from '../homeassistant'
+import { ComponentDiscovery, type Connection }  from '../homeassistant'
 import { type Metadata } from "../thinq"
 import { allowExtendedType } from '@/util/casting';
 import * as TLV from "@/util/tlv"
@@ -12,7 +12,7 @@ import HADevice from './base'
 export default class Device extends TLVDevice {
   constructor(HA: Connection, thinq: Thinq2Device, meta: Metadata) {
     super(HA, "climate", thinq)
-    const config: Config = allowExtendedType({
+    const config: ComponentDiscovery = allowExtendedType({
       ...HADevice.componentConfig(meta),
       name: "LG Air Conditioner",
       temperature_unit: "C",
@@ -80,7 +80,7 @@ export default class Device extends TLVDevice {
         return modes2ha[raw];
       },
       write_xform: (val) => {
-        const modes2clip = { cool: 0, fan_only: 2, heat: 4, dry: 8 };
+        const modes2clip: Record<string, number> = { cool: 0, fan_only: 2, heat: 4, dry: 8 };
         if (val === "off") {
           // Call function power (0x1f7) with value OFF
           this.setProperty("power", "OFF");
@@ -96,11 +96,11 @@ export default class Device extends TLVDevice {
       id: 0x1fa,
       name: "fan_mode",
       read_xform: (raw) => {
-        const modes2ha = { "2": "low", "6": "high"};
+        const modes2ha: Record<string, string> = { "2": "low", "6": "high"};
         return modes2ha[raw];
       },
       write_xform: (val) => {
-        const modes2clip = {
+        const modes2clip: Record<string, number> = {
           low: 2,
           high: 6,
         };
@@ -113,11 +113,11 @@ export default class Device extends TLVDevice {
       id: 0x322,
       name: "swing_mode",
       read_xform: (raw) => {
-        const modes2ha = { "0": "off", "100": "on"};
+        const modes2ha: Record<string, string> = { "0": "off", "100": "on"};
         return modes2ha[raw];
       },
       write_xform: (val) => {
-        const modes2clip = {
+        const modes2clip: Record<string, number> = {
           off: 0,
           on: 100,
         };

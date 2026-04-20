@@ -58,7 +58,7 @@ const STATES = [
     'Auto_dt_open_pause'
 ]
 
-const COURSES = {
+const COURSES: Record<number, string> = {
     0x1: 'Cotton',
     0x2: 'Easy Care',
     0x4: 'Eco 40-60',

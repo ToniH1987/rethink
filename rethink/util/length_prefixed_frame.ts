@@ -1,4 +1,4 @@
-export function splitter(callback: (Buffer)=>void, options?: { maxPayloadLength?: number }) {
+export function splitter(callback: (arg: Buffer)=>void, options?: { maxPayloadLength?: number }) {
     let accum: Buffer|undefined
 
 	return function(buf: Buffer) {

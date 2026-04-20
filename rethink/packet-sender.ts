@@ -48,7 +48,7 @@ var crc16tab = [
 ]
 
 
-function crc16(arr)
+function crc16(arr: number[])
 {
 	let crc = 0
 	arr.forEach((v) => {

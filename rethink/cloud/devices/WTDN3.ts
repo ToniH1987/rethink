@@ -57,7 +57,7 @@ const STATES = [
     'Auto DT Open Pause'
 ]
 
-const NATIVE_COURSES = {
+const NATIVE_COURSES: Record<number, string> = {
     0x1: 'Cotton',
     0x2: 'Ease Care',
     0x4: 'Cotton +',
@@ -78,7 +78,7 @@ const NATIVE_COURSES = {
     0x2c: 'Baby Steam Care',
 }
 
-const CUSTOM_COURSES = {
+const CUSTOM_COURSES: Record<number, string> = {
     0x6f: 'Reducing Wrinkles',
     0x42: 'Fast Wash + Dry',
     0x40: 'Silent',
@@ -130,7 +130,7 @@ const SPINS = [
     1200,
 ]
 
-const DRYING_MODES = {
+const DRYING_MODES: Record<number, string> = {
     0x0: 'Off',
     0x2: 'Auto',
     0x3: '00:30',

@@ -18,17 +18,13 @@ import log from '@/util/logging'
 // 7. To solve this, we subscribe to the availability topics and clean up all the retained "online"
 // 	  messages on startup.
 
-function recursiveReplace(obj: unknown, replacements: Record<string, string>) {
+function recursiveReplace(obj: unknown, replacements: Record<string, string>): unknown {
 	if(Array.isArray(obj)) {
 		return obj.map((v) => recursiveReplace(v, replacements))
 	} else if(obj === null) {
 		return null
 	} else if(typeof(obj) === 'object') {
-		const rv = {}
-		for(let k in obj) {
-			rv[k] = recursiveReplace(obj[k], replacements)
-		}
-		return rv
+		return Object.fromEntries(Object.entries(obj as object).map(([key, value]) => [key, recursiveReplace(value, replacements)]))
 
 	} else if(typeof(obj) === 'string') {
 		let str: string = obj
@@ -44,7 +40,7 @@ function recursiveReplace(obj: unknown, replacements: Record<string, string>) {
 type ConnectionEvents = {
 	discovery: () => void
 	setProperty: (id: string, key: string, value: string) => void
-	statusChanged: (boolean) => void
+	statusChanged: (status: boolean) => void
 }
 
 export class Connection extends TypedEmitter<ConnectionEvents> {
@@ -95,7 +91,7 @@ export class Connection extends TypedEmitter<ConnectionEvents> {
 		this.emit('statusChanged', false)
 	}
 
-	received(topic: string, message: Buffer, packet) {
+	received(topic: string, message: Buffer, packet: mqtt.IPublishPacket) {
 		try {
 			if(topic === this.config.discovery_prefix + '/status' && message.toString('utf-8') === 'online') {
 				log('status', 'HA online, starting discovery process')
@@ -195,3 +191,15 @@ export type ComponentDiscovery = {
 }
 
 export type Config = DeviceDiscovery | ComponentDiscovery
+
+export type ClimateComponent = ComponentInfo & {
+	platform: 'climate',
+	temperature_unit?: 'C'|'F',
+	temp_step?: number,
+	precision?: number,
+	min_temp?: number,
+	max_temp?: number,
+	fan_modes?: string[],
+	swing_modes?: string[],
+	swing_horizontal_modes?: string[],
+}
