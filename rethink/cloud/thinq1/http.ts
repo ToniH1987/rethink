@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express'
-import { Config } from '../../util/config';
+import { Config } from '@/util/config';
 import { XMLParser, XMLBuilder, XMLValidator} from 'fast-xml-parser';
 import { Metadata } from '../thinq';
 

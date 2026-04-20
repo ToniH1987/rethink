@@ -1,7 +1,7 @@
 import HADevice from './base'
 import { Device as Thinq1Device } from "../thinq1/device"
 import { type Connection } from '../homeassistant'
-import { allowExtendedType } from '../../util/casting'
+import { allowExtendedType } from '@/util/casting'
 import { Metadata } from '../thinq'
 
 const ERRORS = [

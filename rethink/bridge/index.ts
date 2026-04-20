@@ -4,8 +4,8 @@ import * as OAuth2 from './oauth2'
 import { BridgeState } from "./state"
 import { Connection as Thinq1Connection } from "./thinq1connection"
 import { Connection as Thinq2Connection } from "./thinq2connection"
-import { Device as T1Downstream } from '../cloud/thinq1/device'
-import { Device as T2Downstream } from '../cloud/thinq2/device'
+import { Device as T1Downstream } from '@/cloud/thinq1/device'
+import { Device as T2Downstream } from '@/cloud/thinq2/device'
 import { TypedEmitter } from 'tiny-typed-emitter';
 
 type StatusCallback = (string) => void

@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process'
 import { Router } from 'express'
-import { CA, Config } from '../../util/config'
+import { CA, Config } from '@/util/config'
 import { ClipDeployMessage } from './clip'
 
 export function routes(config: Config, ca: CA) {

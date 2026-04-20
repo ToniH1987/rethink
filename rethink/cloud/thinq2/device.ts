@@ -6,7 +6,7 @@ import { TypedEmitter } from 'tiny-typed-emitter';
 import { Client, PublishPacket, type Broker } from '../mqtt-broker'
 import { ClipDeployMessage } from './clip'
 
-import log from '../../util/logging'
+import log from '@/util/logging'
 import { Metadata } from '../thinq'
 
 type DeviceEvents = {

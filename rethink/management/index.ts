@@ -2,14 +2,14 @@ import { WebSocketExpress, ExtendedWebSocket } from 'websocket-express';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
-import log from '../util/logging';
+import log from '@/util/logging';
 
-import HA_bridge from '../cloud/ha_bridge'
-import { AnyDevice, DeviceManager } from '../cloud/devmgr';
-import { Bridge } from '../bridge';
+import HA_bridge from '@/cloud/ha_bridge'
+import { AnyDevice, DeviceManager } from '@/cloud/devmgr';
+import { Bridge } from '@/bridge';
 import { Request, Response } from 'express';
-import { Device as T1Device } from "../cloud/thinq1/device";
-import { Device as T2Device } from "../cloud/thinq2/device";
+import { Device as T1Device } from "@/cloud/thinq1/device";
+import { Device as T2Device } from "@/cloud/thinq2/device";
 
 export function app(ha: HA_bridge, manager: DeviceManager, bridge: Bridge | undefined) {
     const app = new WebSocketExpress()

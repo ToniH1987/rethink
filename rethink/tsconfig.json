@@ -9,7 +9,7 @@
         "lib": ["es2021"],
         "target": "es2021",
 
-        // TODO?: "paths": { "@/*": ["./*"] },
+        "paths": { "@/*": ["./*"] },
 
         // TODO?: "strict": true,
         "strictNullChecks": true, // TODO?: can be removed once "strict" is enabled

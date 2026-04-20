@@ -1,11 +1,11 @@
 import { Thinq1Device } from './thinqApi'
 import { TypedEmitter } from 'tiny-typed-emitter';
 import * as tls from 'node:tls'
-import { splitter, make as makeFrame } from '../util/length_prefixed_frame'
+import { splitter, make as makeFrame } from '@/util/length_prefixed_frame'
 import fetch from 'node-fetch';
 import * as HTTPS from 'node:https';
 import { randomUUID } from 'node:crypto';
-import log from '../util/logging'
+import log from '@/util/logging'
 
 type ConnectionEvents = {
     data: (payload: object) => void;

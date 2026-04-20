@@ -2,7 +2,7 @@ import HADevice from './base'
 import { Device as Thinq2Device } from "../thinq2/device"
 import { DeviceDiscovery, type Connection } from '../homeassistant'
 import { type Metadata } from '../thinq'
-import { allowExtendedType } from '../../util/casting'
+import { allowExtendedType } from '@/util/casting'
 import AABBDevice from './aabb_device'
 import { convertFreezerTemperature, convertFridgeTemperature, freezerRange, fridgeRange, packStatus, Status, TemperatureUnit, unpackStatus } from './fridge_common'
 

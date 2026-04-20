@@ -1,7 +1,7 @@
 import * as mqtt from 'mqtt'
 import { TypedEmitter } from 'tiny-typed-emitter';
-import { HAConfig } from '../util/config'
-import log from '../util/logging'
+import { HAConfig } from '@/util/config'
+import log from '@/util/logging'
 
 // Notes on availability topic handling:
 // 1. We want HA to be able to tell if a device is available.

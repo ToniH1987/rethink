@@ -1,4 +1,3 @@
-import { TLV } from "../../util/tlv";
 import { type Metadata } from "../thinq"
 import type { Connection, Config, DeviceDiscovery, ComponentDiscovery } from '../homeassistant'
 

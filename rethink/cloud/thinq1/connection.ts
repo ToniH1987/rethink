@@ -1,7 +1,7 @@
 import { TypedEmitter } from 'tiny-typed-emitter';
-import { splitter, make as makeFrame } from '../../util/length_prefixed_frame'
+import { splitter, make as makeFrame } from '@/util/length_prefixed_frame'
 import { Duplex } from 'node:stream'
-import log from '../../util/logging'
+import log from '@/util/logging'
 
 
 type ConnectionEvents = {
