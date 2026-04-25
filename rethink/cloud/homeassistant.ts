@@ -21,7 +21,8 @@ import log from '../util/logging.js'
 function recursiveReplace(obj: unknown, replacements: Record<string, string>) {
 	if(Array.isArray(obj)) {
 		return obj.map((v) => recursiveReplace(v, replacements))
-
+	} else if(obj === null) {
+		return null
 	} else if(typeof(obj) === 'object') {
 		const rv = {}
 		for(let k in obj) {
@@ -171,7 +172,7 @@ export type AvailabilityInfo = {
 }
 
 export type ComponentInfo = {
-	name?: string
+	name?: string | null
 	platform: string
 	unique_id: string
 }
