@@ -1,24 +1,24 @@
 {
-    "$schema": "https://json.schemastore.org/tsconfig",
-    "compilerOptions": {
-        "module": "esnext",
-        "moduleResolution": "bundler",
-        "outDir": "dist",
-        "allowJs": true,
-        "esModuleInterop": true,
-        "lib": ["es2021"],
-        "target": "es2021",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "outDir": "dist",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "lib": ["es2021"],
+    "target": "es2021",
 
-        "paths": { "@/*": ["./*"] },
+    "paths": { "@/*": ["./*"] },
 
-        "strict": true,
-        "noUncheckedSideEffectImports": true,
-        "skipLibCheck": true
-    },
+    "strict": true,
+    "noUncheckedSideEffectImports": true,
+    "skipLibCheck": true
+  },
 
-    "include": [ "./**/*.ts" ],
+  "include": ["./**/*.ts"],
 
-    "tsc-alias": {
-      "resolveFullPaths": true
-    }
+  "tsc-alias": {
+    "resolveFullPaths": true
+  }
 }
